@@ -4,11 +4,17 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 import csv
 from io import StringIO
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+import io
 
+# Blob storage connection
+connect_str = "DefaultEndpointsProtocol=https;AccountName=fitsworkday;AccountKey=5w5bOARwyBz6AErhr2Bldh6Ew9jzSZkTPokbbX44V1qmSYRIsL4XFYCOSJ5Xu0YWM8zSO8PFCSx2+AStAe4LJA==;EndpointSuffix=core.windows.net"
+blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+container_name = "azure-webjobs-hosts"
 
 # API connection
-API_USERNAME = "etommerup@xellia2.com"
-API_PASSWORD = "vxg_hmw!ckr_UPR9wae"
+API_USERNAME = ""
+API_PASSWORD = ""
 
 
 #Defining variables
@@ -82,37 +88,28 @@ def get_budget_data(version, data):
                                 i += 1
         return data
     
-
 #Creating Data table
 data = []
 budget_versions = budget(data)
-
-print(budget_versions)
-
-
-
-# For Standard data  
-# def get_standard_sheets():
-#         for version in budget_versions:
-#             print(version)
-#             get_budget_data(version, data)
-#             data3 = pd.DataFrame(data, columns=['Account_Name', 'Account_Code', 'Level_Code', 'Version', 'Year', 'Month', 'Amount', 'Sheet_type'])
-#             file_name = 'standard_sheets.csv'
-#             print("We made it!")
-            
-#             data3.to_csv(file_name, mode='a', index=False)
-
 
 def get_standard_sheets():
         for version in budget_versions:
                 print(version)
                 get_budget_data(version, data)
                 data3 = pd.DataFrame(data, columns=['Account_Name', 'Account_Code', 'Level_Code', 'Version', 'Year', 'Month', 'Amount', 'Sheet_type'])
-                file_name = 'standard_sheets.csv'
-                print("We made it!")
 
+                save_dataframe_to_blob(data3, 'standard_sheet.csv')
+                
+def save_dataframe_to_blob(df, file_name):
 
-                data3.to_csv(file_name, mode='a', index=False)
+    csv_buffer = io.StringIO()
+    df.to_csv(csv_buffer, index=False)
+    csv_buffer.seek(0)
+
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=file_name)
+    blob_client.upload_blob(csv_buffer.getvalue(), overwrite=True)
+    
+    print(f"{file_name} uploaded to blob storage")
 
 
 

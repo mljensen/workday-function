@@ -10,32 +10,41 @@ def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
     
     action = req.params.get('action')
-
     
     if action == 'standard_sheets':
         try:
-            print('Standard sheets were selected')
-            logging.info('Run sheets was selected')
+            logging.info('Standard sheets was selected')
             get_standard_sheets()
-            message = 'get_standard_sheets function was executed successfully'
+            logging.info('Standard sheet executed successfully!')
             
         except Exception as e:
             logging.error(f"Error executing get_standard_sheets: {str(e)}")
-            return func.HttpResponse(
-                f"Failed to execute get_standard_sheets: {str(e)}",
-                status_code=500
-            )
-
-    elif action:
-        return func.HttpResponse(f"Action {action} is not recognized.", status_code=400)
+            
+            
+    elif action == 'methods':
+        try:
+            logging.info('Methods was selected')
+            get_methods()
+            logging.info('Methods executed successfully!')
+            
+            
+        except Exception as e:
+            logging.error(f"Error executing get_methods: {str(e)}")
+            
+    elif action == 'get_all':
+        try:
+            logging.info('get_all was selected')
+            get_methods()
+            get_standard_sheets()
+            logging.info('Get all executed successfully!')
+            
+        except Exception as e:
+            logging.error(f"Error executing get_all: {str(e)}")
+            
+   
+    else:  
+        logging.warning('Unknown parameter provided')
     
-    else:
-        get_standard_sheets()
-        get_methods()    
-        return func.HttpResponse(
-            message if action else "Pass an action in the query string for specific operations.",
-            status_code=200
-    )
     
     
     

@@ -4,10 +4,19 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 import csv
 from io import StringIO
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+import io
+
+# Blob storage connection
+connect_str = "DefaultEndpointsProtocol=https;AccountName=fitsworkday;AccountKey=5w5bOARwyBz6AErhr2Bldh6Ew9jzSZkTPokbbX44V1qmSYRIsL4XFYCOSJ5Xu0YWM8zSO8PFCSx2+AStAe4LJA==;EndpointSuffix=core.windows.net"
+blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+container_name = "azure-webjobs-hosts"
+
+
 
 # API connection
-API_USERNAME = "etommerup@xellia2.com"
-API_PASSWORD = "vxg_hmw!ckr_UPR9wae"
+API_USERNAME = ""
+API_PASSWORD = ""
 
 #Defining variables
 url = 'https://api.adaptiveinsights.com/api/v38'
@@ -170,51 +179,48 @@ def get_methods():
                 
                 match method:
                         case 'exportLevels':
-                                level(root, './/level', data)
-                                            
+                                level(root, './/level', data)        
                                 df = pd.DataFrame(data)
                                 df = df.fillna('')
-                                levels_file_name = 'levels.csv'
-                                df.to_csv(levels_file_name, index=True)
+                                save_dataframe_to_blob(df, 'levels.csv')
                                 print("Levels printed to CSV file")
-
-
+                                
                         case 'exportAccounts':
                                 account(root, './/accounts', data)
-                                
                                 df = pd.DataFrame(data)
                                 df = df.fillna('')
-                                accounts_file_name = 'accounts.csv'
-                                df.to_csv(accounts_file_name, index=True)
+                                save_dataframe_to_blob(df, 'accounts.csv')
                                 print("Accounts printed to CSV file")
          
-                        
                         case 'exportAttributes':
                                 attributes(root, './/attribute', data)
-                                
                                 df = pd.DataFrame(data)
                                 df = df.fillna('')
-                                attributes_file_name = 'attributes.csv'
-                                df.to_csv(attributes_file_name, index=True)
+                                save_dataframe_to_blob(df, 'attributes.csv')
                                 print("Attributes printed to CSV file")
       
-
                         case 'exportVersions':
-                                versions(root, './/version', data)
-                                                        
+                                versions(root, './/version', data)                   
                                 df = pd.DataFrame(data)
                                 df = df.fillna('')
-                                versions_file_name = 'versions.csv'
-                                df.to_csv(versions_file_name, index=True)
+                                save_dataframe_to_blob(df, 'versions.csv')
                                 print("Versions printed to CSV file")
                                                 
-
                         case 'exportDimensions':
                                 dimensions(root, './/dimension', data)
-                                
                                 df = pd.DataFrame(data)
                                 df = df.fillna('')
-                                dimensions_file_name = 'dimensions.csv'
-                                df.to_csv(dimensions_file_name, index=True)
+                                save_dataframe_to_blob(df, 'dimensions.csv')
                                 print("Dimensions printed to CSV file")
                         
+                        
+def save_dataframe_to_blob(df, file_name):
+
+    csv_buffer = io.StringIO()
+    df.to_csv(csv_buffer, index=False)
+    csv_buffer.seek(0)
+
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=file_name)
+    blob_client.upload_blob(csv_buffer.getvalue(), overwrite=True)
+    
+    print(f"{file_name} uploaded to blob storage")
