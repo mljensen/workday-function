@@ -1,19 +1,18 @@
 import azure.functions as func
 import logging
-from workday_utils import get_standard_sheets
-
-
+from workday_standard_sheet import get_standard_sheets
+from workday_methods import get_methods
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 @app.route(route="http_trigger")
 def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
-
-
-    action = req.params.get('action')
     
-    if action:
+    action = req.params.get('action')
+
+    
+    if action == 'standard_sheets':
         try:
             print('Standard sheets were selected')
             logging.info('Run sheets was selected')
@@ -30,7 +29,9 @@ def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
     elif action:
         return func.HttpResponse(f"Action {action} is not recognized.", status_code=400)
     
-    else:    
+    else:
+        get_standard_sheets()
+        get_methods()    
         return func.HttpResponse(
             message if action else "Pass an action in the query string for specific operations.",
             status_code=200
@@ -40,13 +41,6 @@ def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
     
     
     # name = req.params.get('name')
-    # if not name:
-    #     try:
-    #         req_body = req.get_json()
-    #     except ValueError:
-    #         pass
-    #     else:
-    #         name = req_body.get('name')
 
     # if name:
     #     return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
