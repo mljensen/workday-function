@@ -13,8 +13,8 @@ blob_service_client = BlobServiceClient.from_connection_string(connect_str)
 container_name = "azure-webjobs-hosts"
 
 # API connection
-API_USERNAME = ""
-API_PASSWORD = ""
+API_USERNAME = "etommerup@xellia2.com"
+API_PASSWORD = "vxg_hmw!ckr_UPR9wae"
 
 
 #Defining variables
@@ -29,36 +29,14 @@ def request_body_version():
     
     
 # Request to get exportData
-def request_body_data(version):
-    body = (f"<?xml version='1.0' encoding='UTF-8'?><call method='exportData' callerName='Basico'><credentials login='{API_USERNAME}' password='{API_PASSWORD}'/><version name='{version}'/><format useInternalCodes='true' includeUnmappedItems='false' /><filters><timeSpan start='01/2024' end='12/2024'/></filters></call>")
+def request_body_data(version, timespan_start, timespan_end):
+    body = (f"<?xml version='1.0' encoding='UTF-8'?><call method='exportData' callerName='Basico'><credentials login='{API_USERNAME}' password='{API_PASSWORD}'/><version name='{version}'/><format useInternalCodes='true' includeUnmappedItems='false' /><filters><timeSpan start='{timespan_start}' end='{timespan_end}'/></filters></call>")
     return body
 
 
-def budget(data):
-    version_response = requests.post(url, data=request_body_version(), headers=header_global)
-    root = ET.fromstring(version_response.content)
-
-    # List to hold the names of top-level parent versions
-    data = []
-    parent_map = {c: p for p in root.iter() for c in p}
-
-    for version in root.iter('version'):
-            name = version.get('name')
-            parent = parent_map[version].get('name')
-        #     if parent == 'Snowflake Dataload':
-        #             data.append(name)
-            if name == 'Rolling Forecast':
-                    print(name)
-                    data.append(name)
-
-        #     if parent == 'Rolling Forecast' or 'Snowflake Dataload':
-        #         print(parent)
-        #         data.append(name)
-
-    return data
-
-def get_budget_data(version, data):
-        response = requests.post(url=url, data=request_body_data(version=version), headers=header_global)
+def get_budget_data(version, request_body):
+        data = []
+        response = requests.post(url=url, data=request_body, headers=header_global)
         #CSV file after CDATA[, which is why we have start and end index
         try:
                 start_index = response.text.index("<![CDATA[") + len("<![CDATA[")
@@ -88,17 +66,13 @@ def get_budget_data(version, data):
                                 i += 1
         return data
     
-#Creating Data table
-data = []
-budget_versions = budget(data)
-
-def get_standard_sheets():
+def get_standard_sheets(budget_versions, timespan_start, timespan_end):
         for version in budget_versions:
-                print(version)
-                get_budget_data(version, data)
-                data3 = pd.DataFrame(data, columns=['Account_Name', 'Account_Code', 'Level_Code', 'Version', 'Year', 'Month', 'Amount', 'Sheet_type'])
+                request_body = request_body_data(version["name"], timespan_start, timespan_end)
+                print(request_body)
+                output_sheet = pd.DataFrame(get_budget_data(version["name"], request_body), columns=['Account_Name', 'Account_Code', 'Level_Code', 'Version', 'Year', 'Month', 'Amount', 'Sheet_type'])
 
-                save_dataframe_to_blob(data3, 'standard_sheet.csv')
+                save_dataframe_to_blob(output_sheet, f'{version["name"]} - standard_sheet.csv')
                 
 def save_dataframe_to_blob(df, file_name):
 
