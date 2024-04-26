@@ -15,8 +15,8 @@ container_name = "azure-webjobs-hosts"
 
 
 # API connection
-API_USERNAME = "etommerup@xellia2.com"
-API_PASSWORD = "vxg_hmw!ckr_UPR9wae"
+API_USERNAME = ""
+API_PASSWORD = ""
 
 #Defining variables
 url = 'https://api.adaptiveinsights.com/api/v38'
