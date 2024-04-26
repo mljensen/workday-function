@@ -3,6 +3,7 @@
 # Manually managing azure-functions-worker may cause unexpected issues
 
 azure-functions
+<<<<<<< HEAD
 azure-storage-blob
 # json
 # datetime
@@ -10,3 +11,5 @@ azure-storage-blob
 # pandas
 # csv
 # io
+=======
+>>>>>>> parent of 87dd92f (Added func for get all)

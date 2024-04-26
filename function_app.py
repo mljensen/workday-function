@@ -27,6 +27,7 @@ def validate_body(body: json):
 def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
     
+<<<<<<< HEAD
     status_code = None
     status_message = ''
     
@@ -50,6 +51,40 @@ def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
              status_message,
              status_code=status_code
         )
+=======
+    action = req.params.get('action')
+
+    
+    if action == 'standard_sheets':
+        try:
+            print('Standard sheets were selected')
+            logging.info('Run sheets was selected')
+            get_standard_sheets()
+            message = 'get_standard_sheets function was executed successfully'
+            
+        except Exception as e:
+            logging.error(f"Error executing get_standard_sheets: {str(e)}")
+            return func.HttpResponse(
+                f"Failed to execute get_standard_sheets: {str(e)}",
+                status_code=500
+            )
+
+    elif action:
+        return func.HttpResponse(f"Action {action} is not recognized.", status_code=400)
+    
+    else:
+        get_standard_sheets()
+        get_methods()    
+        return func.HttpResponse(
+            message if action else "Pass an action in the query string for specific operations.",
+            status_code=200
+    )
+    
+    
+    
+    
+    # name = req.params.get('name')
+>>>>>>> parent of 87dd92f (Added func for get all)
 
     
     

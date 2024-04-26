@@ -4,6 +4,7 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 import csv
 from io import StringIO
+<<<<<<< HEAD
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 import io
 
@@ -13,10 +14,12 @@ blob_service_client = BlobServiceClient.from_connection_string(connect_str)
 container_name = "azure-webjobs-hosts"
 
 
+=======
+>>>>>>> parent of 87dd92f (Added func for get all)
 
 # API connection
-API_USERNAME = ""
-API_PASSWORD = ""
+API_USERNAME = "etommerup@xellia2.com"
+API_PASSWORD = "vxg_hmw!ckr_UPR9wae"
 
 #Defining variables
 url = 'https://api.adaptiveinsights.com/api/v38'
@@ -179,39 +182,54 @@ def get_methods():
                 
                 match method:
                         case 'exportLevels':
-                                level(root, './/level', data)        
+                                level(root, './/level', data)
+                                            
                                 df = pd.DataFrame(data)
                                 df = df.fillna('')
-                                save_dataframe_to_blob(df, 'levels.csv')
+                                levels_file_name = 'levels.csv'
+                                df.to_csv(levels_file_name, index=True)
                                 print("Levels printed to CSV file")
-                                
+
+
                         case 'exportAccounts':
                                 account(root, './/accounts', data)
+                                
                                 df = pd.DataFrame(data)
                                 df = df.fillna('')
-                                save_dataframe_to_blob(df, 'accounts.csv')
+                                accounts_file_name = 'accounts.csv'
+                                df.to_csv(accounts_file_name, index=True)
                                 print("Accounts printed to CSV file")
          
+                        
                         case 'exportAttributes':
                                 attributes(root, './/attribute', data)
+                                
                                 df = pd.DataFrame(data)
                                 df = df.fillna('')
-                                save_dataframe_to_blob(df, 'attributes.csv')
+                                attributes_file_name = 'attributes.csv'
+                                df.to_csv(attributes_file_name, index=True)
                                 print("Attributes printed to CSV file")
       
+
                         case 'exportVersions':
-                                versions(root, './/version', data)                   
+                                versions(root, './/version', data)
+                                                        
                                 df = pd.DataFrame(data)
                                 df = df.fillna('')
-                                save_dataframe_to_blob(df, 'versions.csv')
+                                versions_file_name = 'versions.csv'
+                                df.to_csv(versions_file_name, index=True)
                                 print("Versions printed to CSV file")
                                                 
+
                         case 'exportDimensions':
                                 dimensions(root, './/dimension', data)
+                                
                                 df = pd.DataFrame(data)
                                 df = df.fillna('')
-                                save_dataframe_to_blob(df, 'dimensions.csv')
+                                dimensions_file_name = 'dimensions.csv'
+                                df.to_csv(dimensions_file_name, index=True)
                                 print("Dimensions printed to CSV file")
+<<<<<<< HEAD
                         
                         
 def save_dataframe_to_blob(df, file_name):
@@ -224,3 +242,6 @@ def save_dataframe_to_blob(df, file_name):
     blob_client.upload_blob(csv_buffer.getvalue(), overwrite=True)
     
     print(f"{file_name} uploaded to blob storage")
+=======
+                        
+>>>>>>> parent of 87dd92f (Added func for get all)
