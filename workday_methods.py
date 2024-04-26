@@ -4,7 +4,6 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 import csv
 from io import StringIO
-<<<<<<< HEAD
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 import io
 
@@ -14,8 +13,6 @@ blob_service_client = BlobServiceClient.from_connection_string(connect_str)
 container_name = "azure-webjobs-hosts"
 
 
-=======
->>>>>>> parent of 87dd92f (Added func for get all)
 
 # API connection
 API_USERNAME = "etommerup@xellia2.com"
@@ -229,7 +226,6 @@ def get_methods():
                                 dimensions_file_name = 'dimensions.csv'
                                 df.to_csv(dimensions_file_name, index=True)
                                 print("Dimensions printed to CSV file")
-<<<<<<< HEAD
                         
                         
 def save_dataframe_to_blob(df, file_name):
@@ -242,6 +238,3 @@ def save_dataframe_to_blob(df, file_name):
     blob_client.upload_blob(csv_buffer.getvalue(), overwrite=True)
     
     print(f"{file_name} uploaded to blob storage")
-=======
-                        
->>>>>>> parent of 87dd92f (Added func for get all)
