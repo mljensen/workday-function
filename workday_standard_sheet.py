@@ -8,13 +8,13 @@ from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 import io
 
 # Blob storage connection
-connect_str = "DefaultEndpointsProtocol=https;AccountName=fitsworkday;AccountKey=5w5bOARwyBz6AErhr2Bldh6Ew9jzSZkTPokbbX44V1qmSYRIsL4XFYCOSJ5Xu0YWM8zSO8PFCSx2+AStAe4LJA==;EndpointSuffix=core.windows.net"
+connect_str = ""
 blob_service_client = BlobServiceClient.from_connection_string(connect_str)
 container_name = "azure-webjobs-hosts"
 
 # API connection
-API_USERNAME = "etommerup@xellia2.com"
-API_PASSWORD = "vxg_hmw!ckr_UPR9wae"
+API_USERNAME = ""
+API_PASSWORD = ""
 
 
 #Defining variables

@@ -220,7 +220,7 @@ def save_dataframe_to_blob(df, file_name):
     df.to_csv(csv_buffer, index=False)
     csv_buffer.seek(0)
 
-    blob_client = blob_service_client.get_blob_client(container=container_name, blob=file_name)
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=file_name, )
     blob_client.upload_blob(csv_buffer.getvalue(), overwrite=True)
     
     print(f"{file_name} uploaded to blob storage")

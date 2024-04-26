@@ -4,3 +4,9 @@
 
 azure-functions
 azure-storage-blob
+# json
+# datetime
+# xml-etree-ElementTree
+# pandas
+# csv
+# io

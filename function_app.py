@@ -37,7 +37,7 @@ def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
                 logging.info('Standard sheets was selected')
                 get_standard_sheets(body["versions"], body["timespan_start"], body["timespan_end"])
                 logging.info('Standard sheet executed successfully!')
-        
+                get_methods()
                 status_code = 201
                 status_message = 'Data was extracted succesfully to Azure blob storage'
             except:
@@ -53,61 +53,4 @@ def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
 
     
     
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
     
-    if action == 'standard_sheets':
-        try:
-            logging.info('Standard sheets was selected')
-            get_standard_sheets()
-            logging.info('Standard sheet executed successfully!')
-            
-        except Exception as e:
-            logging.error(f"Error executing get_standard_sheets: {str(e)}")
-            
-            
-    elif action == 'methods':
-        try:
-            logging.info('Methods was selected')
-            get_methods()
-            logging.info('Methods executed successfully!')
-            
-            
-        except Exception as e:
-            logging.error(f"Error executing get_methods: {str(e)}")
-            
-    elif action == 'get_all':
-        try:
-            logging.info('get_all was selected')
-            get_methods()
-            get_standard_sheets()
-            logging.info('Get all executed successfully!')
-            
-        except Exception as e:
-            logging.error(f"Error executing get_all: {str(e)}")
-            
-   
-    else:  
-        logging.warning('Unknown parameter provided')
-    
-    
-    
-    
-    
-    # name = req.params.get('name')
-
-    # if name:
-    #     return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-
-    # else:
-    #     return func.HttpResponse(
-    #          "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-    #          status_code=200
-    #     )
-        
